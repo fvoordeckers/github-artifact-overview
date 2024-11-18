@@ -61,12 +61,17 @@ def main(org, token, ignore_expired):
                     print(f"  Skipping expired artifact: {artifact['name']}")
                     continue
                 
+                # Build GitHub workflow run URL
+                workflow_run_id = artifact["workflow_run"]["id"]
+                workflow_url = f"https://github.com/{org}/{repo_name}/actions/runs/{workflow_run_id}"
+                
                 artifact_info = {
                     "name": artifact["name"],
                     "size_in_bytes": artifact["size_in_bytes"],
                     "created_at": artifact["created_at"],
                     "expires_at": artifact["expires_at"],
-                    "workflow_run_id": artifact["workflow_run"]["id"]
+                    "workflow_run_id": workflow_run_id,
+                    "workflow_url": workflow_url
                 }
                 repo_artifacts.append(artifact_info)
                 total_size += artifact["size_in_bytes"]
@@ -81,6 +86,7 @@ def main(org, token, ignore_expired):
             print(f"  - Artifact: {artifact['name']}, Size: {human_readable_size(artifact['size_in_bytes'])}")
             print(f"    Created: {artifact['created_at']}, Expires: {artifact['expires_at']}")
             print(f"    Workflow Run ID: {artifact['workflow_run_id']}")
+            print(f"    Workflow URL: {artifact['workflow_url']}")
     
     # Print the total size of all artifacts
     print(f"\nTotal size of all artifacts: {human_readable_size(total_size)}")
